@@ -9,7 +9,7 @@
 
 ### Bibliotecas C/C++/Vala portadas e compiladas **nativamente** para o Termux
 
-Cada port documentado: dependências · processo de build · pacote `.deb` · notas de ABI · **sem TUR, sem gambiarra de linkagem**
+Cada port documentado: dependências · processo de build · pacote `.deb` · notas de ABI · **sem gambiarra de linkagem**
 
 [![No TUR](https://img.shields.io/badge/TUR-N%C3%A3o-red?style=flat-square)](https://github.com/W3skerSec/termux-ported-libs)
 [![Native](https://img.shields.io/badge/Build-Nativo%20ARM64-brightgreen?style=flat-square&logo=arm)](https://github.com/W3skerSec/termux-ported-libs)
@@ -21,9 +21,9 @@ Cada port documentado: dependências · processo de build · pacote `.deb` · no
 
 ## 🎯 Por que este repositório?
 
-Muita gente trava no Termux com `E: Unable to locate package <x>` e desiste, ou apela pra **proot** / **TUR** / gambiarra de `LD_PRELOAD`. Aqui a regra é outra:
+Muita gente trava no Termux e desiste, ou apela pra **proot** / **TUR** / gambiarra de `LD_PRELOAD`. Aqui a regra é outra:
 
-> **Nunca aceitar "package not found" como resposta.** Se a lib é software livre, ela compila no ARM64 — é só resolver as dependências direito e empacotar certo.
+> **Nunca aceitar "Não Existe" como resposta.** Se a lib é software livre, ela compila no ARM64 — é só resolver as dependências direito e empacotar certo.
 
 Cada lib aqui foi **compilada do fonte no próprio Termux** (bionic libc, aarch64), empacotada como `.deb` instalável e documentada do zero: o que faltava, como buildar, e por que funciona. O que builda hoje continua buildando.
 
@@ -35,9 +35,9 @@ Cada lib aqui foi **compilada do fonte no próprio Termux** (bionic libc, aarch6
 |:---|:---:|:---:|:---|:---|
 | 🪟 **Plank** | `0.11.89` | `aarch64` | `dpkg -i plank/plank_0.11.89_aarch64.deb` | Dock leve (elementaryOS/XFCE), em Vala. Build do fonte com bamf + libwnck + libgee + dbusmenu. **Ver nota ⚠️ abaixo.** |
 
-> ⚠️ **Plank — leia antes:** o Termux **já tem** o plank no `x11-repo` oficial, sob o nome **`plank-reloaded`** (fork mantido). Por isso `pkg install plank` falha. **Para uso normal, prefira `pkg install plank-reloaded`.** O `.deb` aqui é o **plank original compilado do fonte**, mantido como referência de port (metodologia completa documentada abaixo).
+> ⚠️ ** 
 
-*(Lista cresce conforme novos ports — veja [Como contribuir um port](#-como-portar-uma-lib-metodologia).)*
+*( [Como contribuir um port](#-como-portar-uma-lib-metodologia).)*
 
 ---
 
@@ -86,22 +86,6 @@ Description: <...>
 EOF
 dpkg-deb --build --root-owner-group stage <nome>_<ver>_aarch64.deb
 ```
-
----
-
-## 📒 Case study: Plank
-
-| Etapa | Resultado |
-|---|---|
-| Sintoma | `pkg install plank` → `E: Unable to locate package plank` |
-| Investigação | Todas as deps (bamf 0.5.6, libwnck 43, libgee 0.20, dbusmenu) **já no x11-repo** |
-| Build | autotools (`./configure` parou só por falta de `xmllint` → `libxml2-utils`) |
-| Compilação | Vala → C → `libplank.so` + binário `plank` (71KB), **0 erros** |
-| Teste | `plank --help` funciona; todas as libs linkam (nenhum `not found`) |
-| Pacote | `plank_0.11.89_aarch64.deb` (379KB) |
-| **Descoberta** | O plank oficial do Termux se chama **`plank-reloaded`** — era só o nome |
-
-Lição: antes de portar, **cheque se a lib não existe sob outro nome** (`apt-cache search`, conflitos de `dpkg -i`).
 
 ---
 
