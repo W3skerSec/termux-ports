@@ -34,6 +34,7 @@ Cada lib aqui foi **compilada do fonte no próprio Termux** (bionic libc, aarch6
 | Lib | Versão | Arquitetura | Instalação | Finalidade Técnica |
 |:---|:---:|:---:|:---|:---|
 | 🪟 **Plank** | `0.11.89` | `aarch64` | `dpkg -i plank/plank_0.11.89_aarch64.deb` | Dock leve (elementaryOS/XFCE), em Vala. Build do fonte com bamf + libwnck + libgee + dbusmenu. **Ver nota ⚠️ abaixo.** |
+| 🐍 **hydra** | v9.8dev | `aarch64` | `bash hydra/BUILD.sh` | Login cracker (THC). Recompilado + **patch fdsan** (roda no Android) + ajuda/man em **PT-BR**. |
 
 > ⚠️ ** 
 

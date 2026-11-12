@@ -1,0 +1,197 @@
+.TH "HYDRA" "1" "2026-11-12" "thc-hydra :: port Termux/ARM64 PT-BR" "Manual do Hydra"
+.SH NOME
+hydra \- quebrador de logins de rede muito rapido, com suporte a varios servicos
+.br
+hydra\-auto, hydra\-menu, hydra\-set\-intro \- utilitarios modernos deste port
+.SH SINOPSE
+.B hydra
+[opcoes] alvo servico [PARAMETROS DO MODULO]
+.br
+.B hydra\-auto
+[mesmos argumentos do hydra, incluindo \-P ARQ]
+.br
+.B hydra\-menu
+.br
+.B hydra\-set\-intro
+[\-\-sep 'SEP'] [\-\-delay SEG] [\-\-color N] [ARQUIVO]
+.SH INICIO RAPIDO
+Para a maioria dos casos, use o menu \- ele monta a sintaxe correta sozinho:
+.PP
+.RS
+hydra\-menu
+.RE
+.PP
+Ou, direto, com calibracao automatica de velocidade:
+.PP
+.RS
+hydra\-auto \-l admin \-P senhas.txt \-s 22 \-f 10.0.0.1 ssh
+.RE
+.PP
+O hydra puro continua igual ao upstream (veja OPCOES e EXEMPLOS).
+.SH DESCRICAO
+Hydra e um quebrador de logins paralelizado com suporte a inumeros protocolos.
+E flexivel, muito rapido e facil de estender com novos modulos. Permite a
+pesquisadores e consultores demonstrar o quao facil seria obter acesso nao
+autorizado a um sistema remotamente \- use apenas em alvos autorizados.
+.PP
+Este port foi recompilado da fonte oficial e corrigido para Android/Termux
+(ARM64), alem de ganhar tres utilitarios (veja FERRAMENTAS MODERNAS).
+.TP
+Protocolos suportados:
+adam6500 afp asterisk cisco cisco\-enable cvs firebird ftp ftps
+http[s]\-{head|get|post} http[s]\-{get|post}\-form http\-proxy
+http\-proxy\-urlenum icq imap[s] irc ldap2[s] ldap3[\-{cram|digest}md5][s]
+mssql mysql ncp nntp oracle pcanywhere pcnfs pop3[s] postgres rdp radmin2
+redis rexec rlogin rpcap rsh rtsp s7\-300 sapr3 sip smb smtp[s] smtp\-enum
+snmp socks5 ssh sshkey svn teamspeak telnet[s] vmauthd vnc xmpp
+.PP
+Digite "hydra" sem argumentos para ver os modulos compilados neste binario.
+.SH FERRAMENTAS MODERNAS
+.SS hydra-auto \- calibracao automatica de \-t
+O numero de tarefas paralelas (\-t) tem um ponto otimo: poucas, e lento;
+demais, a CPU satura e a velocidade CAI (over\-parallelization). O
+.B hydra\-auto
+roda um probe rapido em varios valores de \-t, mede o throughput, escolhe o
+pico e so entao dispara o ataque real \- sem voce chutar o \-t.
+.PP
+.RS
+hydra\-auto \-l admin \-P senhas.txt \-s 9999 \-f 10.0.0.1 http\-get /admin
+.RE
+.PP
+Aceita exatamente os mesmos argumentos do hydra (precisa de \-P ARQ para
+calibrar). Remove um \-t que voce tenha passado e impoe o calibrado.
+.SS hydra-menu \- front-end interativo
+Menu multi\-protocolo (SSH, FTP, HTTP Basic, HTTP form, SMTP, Telnet, MySQL,
+SMB, RDP). Pergunta alvo, porta, usuario/arquivo e senha/arquivo, monta a
+.B ordem correta
+dos argumentos do hydra (um erro comum) e dispara via hydra\-auto. Abre com
+uma intro animada. Uso:
+.PP
+.RS
+hydra\-menu
+.RE
+.SS hydra-set-intro \- animacao de abertura
+Importa/cola uma animacao ASCII usada como intro do hydra\-menu. Frames sao
+separados por uma linha contendo so o separador (padrao "\-\-\-"); um frame so
+vira modo "revelacao" (linha a linha + glow).
+.TP
+.B \-\-sep 'SEP'
+separador de frames (padrao: \-\-\-)
+.TP
+.B \-\-delay SEG
+tempo entre frames (padrao: 0.08)
+.TP
+.B \-\-color N
+cor ANSI (36=ciano, 31=vermelho, 32=verde, 35=magenta...)
+.PP
+.RS
+hydra\-set\-intro minha_anim.txt        # de um arquivo
+.br
+hydra\-set\-intro                       # cola e finaliza com Ctrl\-D
+.br
+hydra\-intro                           # pre\-visualiza a intro atual
+.RE
+.SH OPCOES
+.TP
+.B alvo
+alvo a atacar: endereco IPv4, IPv6 ou nome DNS.
+.TP
+.B servico
+servico/protocolo a atacar (veja a lista em DESCRICAO).
+.TP
+.B \-l LOGIN / \-L ARQ
+usa o login LOGIN, ou carrega varios logins de ARQ.
+.TP
+.B \-p SENHA / \-P ARQ
+tenta a senha SENHA, ou carrega varias senhas de ARQ.
+.TP
+.B \-C ARQ
+formato "login:senha" por linha (dois\-pontos), no lugar de \-L/\-P.
+.TP
+.B \-x min:max:charset
+gera senhas de tamanho min a max. charset: 1=numeros, a=minusculas,
+A=maiusculas; outros caracteres entram literais. Ex.: 1:2:a1%.
+.TP
+.B \-y
+desabilita simbolos no bruteforce \-x.
+.TP
+.B \-e nsr
+checagens extras: n=senha nula, s=login como senha, r=login invertido.
+.TP
+.B \-u
+inverte o loop: testa a 1a senha em todos os logins, depois a 2a, etc.
+.TP
+.B \-s PORTA
+porta do servico, se diferente da padrao.
+.TP
+.B \-t TAREFAS
+conexoes em paralelo (padrao: 16). Prefira hydra\-auto para achar o otimo.
+.TP
+.B \-f / \-F
+sai no 1o par achado (por host / em qualquer host, com \-M).
+.TP
+.B \-M ARQ
+lista de servidores para ataques paralelos (um por linha).
+.TP
+.B \-o ARQ / \-b FORMATO
+grava os pares achados em ARQ; FORMATO = text (padrao), json, jsonv1.
+.TP
+.B \-w TEMPO / \-W TEMPO / \-c TEMPO
+esperas: max por resposta (padrao 32s) / entre conexoes de uma tarefa /
+por tentativa sobre todas as threads.
+.TP
+.B \-S / \-O
+conecta via SSL / usa SSL v2 e v3 antigos.
+.TP
+.B \-4 / \-6
+prefere IPv4 (padrao) ou IPv6.
+.TP
+.B \-v / \-V / \-d
+verboso / mostra login+senha de cada tentativa / modo debug.
+.TP
+.B \-R / \-I
+restaura sessao abortada (hydra.restore) / ignora o arquivo restore.
+.TP
+.B \-U <modulo>
+mostra as opcoes especificas de um modulo.
+.TP
+.B \-h, \-\-help
+resumo das opcoes.
+.SH EXEMPLOS
+.TP
+SSH (com calibracao automatica):
+hydra\-auto \-l admin \-P senhas.txt \-s 22 \-f 10.0.0.1 ssh
+.TP
+HTTP Basic Auth:
+hydra \-l admin \-P senhas.txt \-s 80 10.0.0.1 http\-get /admin
+.TP
+Formulario HTTP POST (^USER^/^PASS^ e o texto de falha):
+hydra \-l admin \-P senhas.txt 10.0.0.1 http\-post\-form \\
+  "/login:user=^USER^&pass=^PASS^:incorreto"
+.TP
+FTP em varios alvos, parando no 1o achado:
+hydra \-L users.txt \-P senhas.txt \-F \-M alvos.txt ftp
+.TP
+Salvando resultado em JSON:
+hydra \-l root \-P senhas.txt \-o achados.json \-b json 10.0.0.1 ssh
+.SH DESEMPENHO
+O ponto otimo de \-t depende da CPU e da latencia do alvo. Em testes locais
+neste porte, o throughput subiu ate ~\-t 32 e CAIU em \-t 64 (saturacao).
+Regra pratica: deixe o hydra\-auto escolher. Symlinks de ICU NAO resolvem
+quebras de ABI \- mantenha os pacotes do sistema atualizados.
+.SH NOTAS
+Correcao para Android/Termux: o fdsan do Bionic abortava o processo por um
+fechamento duplo de descritor no carregamento das wordlists (o zlib fechava,
+via gzclose, um fd que pertencia ao FILE* da wordlist). O patch passa um
+dup() do descritor para o zlib, resolvendo o abort \- veja o BUILD.sh do port.
+.SH VEJA TAMBEM
+.BR pw\-inspector (1),
+.BR xhydra (1).
+.SH AUTOR
+hydra por van Hauser / THC <vh@thc.org>.
+Pagina original (Debian) por Daniel Echeverry.
+.br
+Port Termux/ARM64, utilitarios (hydra\-auto/menu/set\-intro) e esta
+documentacao PT\-BR por W3skerSec.
+.br
+Fonte: https://github.com/vanhauser\-thc/thc\-hydra
