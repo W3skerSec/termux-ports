@@ -99,20 +99,6 @@ dpkg -i plank/plank_0.11.89_aarch64.deb
 apt-get install -f -y
 ```
 
-## 🧩 Ambiente glibc (pré-requisito, não é port nosso)
-
-Alguns binários exigem o **glibc do Termux** (loader `ld-linux-aarch64.so.1`) — ex: o
-[Antigravity CLI](https://github.com/wallentx/antigravity-cli-termux) (`agy`). Isso **não**
-é re-hospedado aqui: vem do **glibc-repo oficial** do Termux. Habilite com:
-
-```bash
-bash glibc/setup-glibc.sh
-# ou manualmente:
-pkg install -y glibc-repo && pkg update && pkg install -y glibc glibc-runner
-```
-
-Erro típico sem isso: `Missing Termux glibc loader: .../glibc/lib/ld-linux-aarch64.so.1`.
-
 ## Licenças
 
 Cada lib mantém a licença do seu projeto upstream (Plank: GPL-3.0). Este repositório apenas empacota builds nativos; os créditos são dos autores originais.
